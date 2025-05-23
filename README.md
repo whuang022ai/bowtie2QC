@@ -8,11 +8,12 @@ A python bowtie2 QC ploter
 
 # Getting Start
 
-## install from pip
+## Install from pip
 
 ```
 pip install bowtie2qc
 ```
+see also [https://pypi.org/project/bowtie2qc/](https://pypi.org/project/bowtie2qc/)
 
 # Usage
 
