@@ -20,3 +20,40 @@ def plot_bar(ax, labels, sizes, title, **kwargs):
     ax.set_xlim(1, max(sizes) * 20 if max(sizes) > 0 else 10)
     ax.set_xscale('log')
     ax.tick_params(axis='both', labelsize=5)
+
+
+def plot_bars_of_bowtie2_log(data, ax):
+
+    labels_sets = [['0', '1', '>1'], ['1', '0'], ['0', '1', '>1']]
+
+    sizes_sets = [[
+        data['concordant_0']['count'], data['concordant_1']['count'],
+        data['concordant_more']['count']
+    ],
+    [
+        data['discordant_1']['count'],
+        data['concordant_0']['count'] +
+        data['discordant_1']['count']
+    ],
+    [
+        data['mate_0']['count'], data['mate_1']['count'],
+        data['mate_more']['count']
+    ]]
+
+    titles = [
+        f'{data["log_file"]}\nConcordant N',
+        f'{data["log_file"]}\nConcordant=0`s Breakdown\n(Discordant N)',
+        f'{data["log_file"]}\nMate-Level N'
+    ]
+
+    colors = ['#078282', '#0ababa', '#c3ffff']
+    offsets = [500000, 500000, 100000]
+
+    for i in range(3):
+        print( sizes_sets[i])
+        plot_bar(ax[i],
+                 labels_sets[i],
+                 sizes_sets[i],
+                 titles[i],
+                 offset=offsets[i],
+                 color=colors[i])
