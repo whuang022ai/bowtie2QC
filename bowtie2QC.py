@@ -85,6 +85,11 @@ def procress_logs_with_pdf(log_files):
             data = parse_bowtie2_log(log_file)
             bowtie2QCPlot.plot_bars_of_bowtie2_log(data, ax[i])
 
+        plt.subplots_adjust(left=0.15,
+                    right=0.9,
+                    top=0.9,
+                    bottom=0.55,
+                    hspace=0.6) 
         pdf.savefig(fig)
 
 
