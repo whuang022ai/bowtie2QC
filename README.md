@@ -5,3 +5,9 @@
 A python bowtie2 QC ploter
 
 ![image](https://github.com/user-attachments/assets/fd1b697a-a9fa-4494-9569-8f83d38fd376)
+
+Install
+
+```
+pip install bowtie2QC
+```
