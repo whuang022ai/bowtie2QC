@@ -3,6 +3,7 @@ import bowtie2QCPlot
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
+
 def auto_cast(value):
     '''
     cast value to int or float from str
@@ -73,6 +74,7 @@ def procress_logs(log_files):
     plt.savefig(f"tmp.png")
     plt.close(fig)
 
+
 def procress_logs_with_pdf(log_files):
     '''
     procress bowtie logs to combine fig
@@ -82,9 +84,10 @@ def procress_logs_with_pdf(log_files):
         for i, log_file in enumerate(log_files):
             data = parse_bowtie2_log(log_file)
             bowtie2QCPlot.plot_bars_of_bowtie2_log(data, ax[i])
-        
+
         pdf.savefig(fig)
-    
+
+
 if __name__ == '__main__':
     log_files = ["test.log", "test.log"]
     procress_logs_with_pdf(log_files)
