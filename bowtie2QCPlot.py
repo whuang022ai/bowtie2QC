@@ -51,7 +51,7 @@ def plot_bars_of_bowtie2_log(data, ax):
         f'{data["log_file"]}\nMate-Level N'
     ]
 
-    colors = ['#078282', '#0ababa', '#c3ffff']
+    colors = ['#078282', '#0ababa', '#03fffa']
     offsets = [500000, 500000, 100000]
 
     for i in range(3):
