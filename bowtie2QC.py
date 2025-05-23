@@ -1,5 +1,11 @@
 import re
 
+def auto_cast(value):
+    '''
+    cast value to int or float from str
+    '''
+    return float(value) if '.' in value else int(value)
+
 def parse_bowtie2_log(log_file):
     '''
     parse bowtie2 log of Pair-End mapping
