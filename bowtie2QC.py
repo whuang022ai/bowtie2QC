@@ -109,5 +109,5 @@ def procress_logs_with_pdf(log_files):
 
 
 if __name__ == '__main__':
-    log_files = ["test.log", "test.log"]
+    log_files = ["test.log", "test2.log","test3.log"]
     procress_logs_with_pdf(log_files)
