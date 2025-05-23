@@ -39,3 +39,20 @@ def parse_bowtie2_log(log_file):
         'overall_alignment_rate': r'([\d.]+)% overall alignment rate',
     }
 
+    with open(log_file, encoding='utf-8') as file:
+        for line in file:
+            for key, pattern in patterns.items():
+                match = re.search(pattern, line)
+                if not match:
+                    continue
+                groups = match.groups()
+                if len(groups) == 1:
+                    stats[key] = auto_cast(groups[0])
+                elif len(groups) == 2:
+                    stats[key] = {
+                        'count': auto_cast(groups[0]),
+                        'percent': auto_cast(groups[1])
+                    }
+
+    stats['log_file'] = log_file
+    return stats
