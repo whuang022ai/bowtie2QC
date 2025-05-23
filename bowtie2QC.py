@@ -63,6 +63,9 @@ def parse_bowtie2_log(log_file):
 
 
 def procress_logs(log_files):
+    '''
+    procress bowtie logs to combine fig
+    '''
     fig, ax = plt.subplots(len(log_files), 3, figsize=(8.27, 11.69))
     for i, log_file in enumerate(log_files):
         data = parse_bowtie2_log(log_file)
