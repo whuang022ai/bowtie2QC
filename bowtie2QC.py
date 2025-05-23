@@ -1,4 +1,6 @@
 import re
+import bowtie2QCPlot
+import matplotlib.pyplot as plt
 
 
 def auto_cast(value):
@@ -59,13 +61,15 @@ def parse_bowtie2_log(log_file):
     stats['log_file'] = log_file
     return stats
 
+
 def procress_logs(log_files):
-    for log in log_files:
-        data = parse_bowtie2_log(log)
-        print(data)      
-          
+    fig, ax = plt.subplots(len(log_files), 3, figsize=(8.27, 11.69))
+    for i, log_file in enumerate(log_files):
+        data = parse_bowtie2_log(log_file)
+        bowtie2QCPlot.plot_bars_of_bowtie2_log(data, ax[i])
+    plt.savefig(f"tmp.png")
+    plt.close(fig)
+
 if __name__ == '__main__':
-    log_files = [
-        "test.log" , "test.log"
-    ]
+    log_files = ["test.log", "test.log"]
     procress_logs(log_files)
