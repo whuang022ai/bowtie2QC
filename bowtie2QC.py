@@ -1,10 +1,12 @@
 import re
 
+
 def auto_cast(value):
     '''
     cast value to int or float from str
     '''
     return float(value) if '.' in value else int(value)
+
 
 def parse_bowtie2_log(log_file):
     '''
@@ -56,3 +58,7 @@ def parse_bowtie2_log(log_file):
 
     stats['log_file'] = log_file
     return stats
+
+
+data = parse_bowtie2_log("test.log")
+print(data)
