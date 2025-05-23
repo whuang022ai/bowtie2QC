@@ -59,6 +59,13 @@ def parse_bowtie2_log(log_file):
     stats['log_file'] = log_file
     return stats
 
-
-data = parse_bowtie2_log("test.log")
-print(data)
+def procress_logs(log_files):
+    for log in log_files:
+        data = parse_bowtie2_log(log)
+        print(data)      
+          
+if __name__ == '__main__':
+    log_files = [
+        "test.log" , "test.log"
+    ]
+    procress_logs(log_files)
