@@ -2,7 +2,7 @@ import re
 import bowtie2QCPlot
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-
+import pandas as pd
 
 def auto_cast(value):
     '''
@@ -75,15 +75,30 @@ def procress_logs(log_files):
     plt.close(fig)
 
 
+
 def procress_logs_with_pdf(log_files):
     '''
     procress bowtie logs to combine fig
     '''
+    all_data = []
     with PdfPages('bowtie2_alignment_results.pdf') as pdf:
         fig, ax = plt.subplots(len(log_files), 3, figsize=(8.27, 11.69))
         for i, log_file in enumerate(log_files):
             data = parse_bowtie2_log(log_file)
+            flat_data = {
+            'total_reads': data['total_reads'],
+            'overall_alignment_rate': data['overall_alignment_rate'],
+            'log_file': data['log_file'],
+            }
+            for key in ['concordant_0', 'concordant_1', 'concordant_more', 'discordant_1', 'mate_0', 'mate_1', 'mate_more']:
+                flat_data[f'{key}_count'] = data[key]['count']
+                flat_data[f'{key}_percent'] = data[key]['percent']
+            #df = pd.DataFrame([flat_data])
+            #print(df)
+            all_data.append(flat_data)
             bowtie2QCPlot.plot_bars_of_bowtie2_log(data, ax[i])
+        df = pd.DataFrame(all_data) 
+        print(df)
 
         plt.subplots_adjust(left=0.15,
                     right=0.9,
