@@ -11,7 +11,7 @@ A python bowtie2 QC ploter
 ## install from pip
 
 ```
-pip install bowtie2QC
+pip install bowtie2qc
 ```
 
 # Usage

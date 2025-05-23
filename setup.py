@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
  
 HERE = pathlib.Path(__file__).parent.resolve()
  
-PACKAGE_NAME = "bowtie2QC"
+PACKAGE_NAME = "bowtie2qc"
 AUTHOR = "MING HAN YANG"
 AUTHOR_EMAIL = "whuang022@gmail.com"
 URL = "https://github.com/whuang022ai/bowtie2QC"
