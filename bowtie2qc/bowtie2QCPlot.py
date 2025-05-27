@@ -50,3 +50,45 @@ def plot_bars_of_bowtie2_log(data, ax):
                  titles[i],
                  offset=offsets[i],
                  color=colors[i])
+
+def plot_overall_plot(data, ax):
+    total_reads = [val['total_reads'] for val in data]
+    concordant_0 = [val['concordant_0']['count'] for val in data]
+    concordant_1 = [val['concordant_1']['count'] for val in data]
+    concordant_more = [
+        val['concordant_more']['count'] for val in data
+    ]
+
+    ax[0].barh(range(len(data)),
+               concordant_0,
+               align='center',
+               color='#078282',
+               label='Concordant 0 times')
+    ax[0].barh(range(len(data)),
+               concordant_1,
+               align='center',
+               color='#0ababa',
+               label='Concordant 1 time')
+    ax[0].barh(range(len(data)),
+               concordant_more,
+               align='center',
+               color='#c3ffff',
+               label='Concordant >1 times')
+
+    ax[0].set_yticks(range(len(data)))
+    ax[0].set_yticklabels([val['log_file'] for val in data],
+                          fontsize=5)  # 調整字體大小
+    ax[0].set_xlabel('Reads', fontsize=5)
+    ax[0].set_title('Overall Concordant Alignment', fontsize=5)
+    ax[0].legend(fontsize=5)
+
+    alignment_rates = [val['overall_alignment_rate'] for val in data]
+    ax[1].barh(range(len(data)),
+               alignment_rates,
+               align='center',
+               color='#0ababa')
+    ax[1].set_yticks(range(len(data)))
+    ax[1].set_yticklabels([val['log_file'] for val in data],
+                          fontsize=5)  # 調整字體大小
+    ax[1].set_xlabel('Alignment Rate (%)', fontsize=5)
+    ax[1].set_title('Overall Alignment Rates', fontsize=5)
