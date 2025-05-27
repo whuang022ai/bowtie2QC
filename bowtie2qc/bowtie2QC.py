@@ -1,7 +1,10 @@
+'''
+The bowtie2 qc log procress
+'''
+import re
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
-import re
 from .bowtie2QCPlot import plot_bars_of_bowtie2_log
 
 def auto_cast(value):
@@ -11,7 +14,7 @@ def auto_cast(value):
     return float(value) if '.' in value else int(value)
 
 
-def parse_bowtie2_log(log_file):
+def parse_bowtie2_log(log_file:str):
     '''
     parse bowtie2 log of Pair-End mapping
     input : bowtie2 log file path
@@ -63,7 +66,7 @@ def parse_bowtie2_log(log_file):
     return stats
 
 
-def procress_logs(log_files):
+def procress_logs(log_files:list):
     '''
     procress bowtie logs to combine fig
     '''
@@ -76,7 +79,7 @@ def procress_logs(log_files):
 
 
 
-def procress_logs_with_pdf(log_files):
+def procress_logs_with_pdf(log_files:list):
     '''
     procress bowtie logs to combine fig
     '''
