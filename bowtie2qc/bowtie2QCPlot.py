@@ -72,7 +72,7 @@ def plot_overall_plot(data, ax):
     width_px = bbox_x.width * fig.dpi
     x_fontsize = get_dynamic_fontsize(num_items, width_px, min_size=3, max_size=5, scale=0.15)
 
-    ax[0].barh(range(num_items), total_reads, align='center', color='#0ababa', label='Total Reads')
+    ax[0].barh(range(num_items), total_reads, align='center', color='#078282', label='Total Reads')
     ax[0].set_yticks(range(num_items))
     ax[0].set_yticklabels(labels, fontsize=y_fontsize)
     ax[0].set_xlabel('Reads', fontsize=x_fontsize)
