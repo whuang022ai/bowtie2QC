@@ -92,9 +92,9 @@ def procress_logs_with_pdf(log_files:list):
             data = parse_bowtie2_log(log_file)
             flat_data = {
             'title_name':data['title_name'],
+            'log_file': data['log_file'],
             'total_reads': data['total_reads'],
             'overall_alignment_rate': data['overall_alignment_rate'],
-            'log_file': data['log_file'],
             }
             for key in ['concordant_0', 'concordant_1', 'concordant_more', 'discordant_1', 'mate_0', 'mate_1', 'mate_more']:
                 flat_data[f'{key}_count'] = data[key]['count']
