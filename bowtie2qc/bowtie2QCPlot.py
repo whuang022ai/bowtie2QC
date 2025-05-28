@@ -77,7 +77,7 @@ def plot_overall_plot(data, ax):
     ax[0].set_yticklabels(labels, fontsize=y_fontsize)
     ax[0].set_xlabel('Reads', fontsize=x_fontsize)
     ax[0].tick_params(axis='x', labelsize=x_fontsize)
-    ax[0].set_title('Overall Concordant Alignment', fontsize=x_fontsize)
+    ax[0].set_title('Overall Reads', fontsize=x_fontsize)
     ax[0].legend(fontsize=x_fontsize)
 
     for i, val in enumerate(total_reads):
