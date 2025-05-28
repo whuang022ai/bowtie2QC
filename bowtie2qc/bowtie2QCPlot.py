@@ -51,44 +51,44 @@ def plot_bars_of_bowtie2_log(data, ax):
                  offset=offsets[i],
                  color=colors[i])
 
+def get_dynamic_fontsize(num_items, axis_size, min_size=3, max_size=10, scale=0.6):
+    size = axis_size / num_items * scale
+    return max(min(size, max_size), min_size)
+
 def plot_overall_plot(data, ax):
     total_reads = [val['total_reads'] for val in data]
-    concordant_0 = [val['concordant_0']['count'] for val in data]
-    concordant_1 = [val['concordant_1']['count'] for val in data]
-    concordant_more = [
-        val['concordant_more']['count'] for val in data
-    ]
-
-    ax[0].barh(range(len(data)),
-               concordant_0,
-               align='center',
-               color='#078282',
-               label='Concordant 0 times')
-    ax[0].barh(range(len(data)),
-               concordant_1,
-               align='center',
-               color='#0ababa',
-               label='Concordant 1 time')
-    ax[0].barh(range(len(data)),
-               concordant_more,
-               align='center',
-               color='#c3ffff',
-               label='Concordant >1 times')
-
-    ax[0].set_yticks(range(len(data)))
-    ax[0].set_yticklabels([val['log_file'] for val in data],
-                          fontsize=5)  # 調整字體大小
-    ax[0].set_xlabel('Reads', fontsize=5)
-    ax[0].set_title('Overall Concordant Alignment', fontsize=5)
-    ax[0].legend(fontsize=5)
-
     alignment_rates = [val['overall_alignment_rate'] for val in data]
-    ax[1].barh(range(len(data)),
-               alignment_rates,
-               align='center',
-               color='#0ababa')
-    ax[1].set_yticks(range(len(data)))
-    ax[1].set_yticklabels([val['log_file'] for val in data],
-                          fontsize=5)  # 調整字體大小
-    ax[1].set_xlabel('Alignment Rate (%)', fontsize=5)
-    ax[1].set_title('Overall Alignment Rates', fontsize=5)
+    labels = [val['title_name'] for val in data]
+    num_items = len(data)
+
+    fig = ax[0].get_figure()
+    fig.canvas.draw()
+
+    bbox_y = ax[0].get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    height_px = bbox_y.height * fig.dpi
+    y_fontsize = get_dynamic_fontsize(num_items, height_px, max_size=5, scale=0.15)
+
+    bbox_x = ax[0].get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width_px = bbox_x.width * fig.dpi
+    x_fontsize = get_dynamic_fontsize(num_items, width_px, min_size=3, max_size=5, scale=0.15)
+
+    ax[0].barh(range(num_items), total_reads, align='center', color='#0ababa', label='Total Reads')
+    ax[0].set_yticks(range(num_items))
+    ax[0].set_yticklabels(labels, fontsize=y_fontsize)
+    ax[0].set_xlabel('Reads', fontsize=x_fontsize)
+    ax[0].tick_params(axis='x', labelsize=x_fontsize)
+    ax[0].set_title('Overall Concordant Alignment', fontsize=x_fontsize)
+    ax[0].legend(fontsize=x_fontsize)
+
+    for i, val in enumerate(total_reads):
+        ax[0].text(val + max(total_reads) * 0.01, i, f'{val:,}', 
+                   va='center', ha='left', fontsize=x_fontsize, color='black')
+    ax[1].barh(range(num_items), alignment_rates, align='center', color='#0ababa')
+    ax[1].set_xlabel('Alignment Rate (%)', fontsize=x_fontsize)
+    ax[1].tick_params(axis='x', labelsize=x_fontsize)
+    ax[1].set_title('Overall Alignment Rates', fontsize=x_fontsize)
+    ax[1].tick_params(axis='y', left=False, labelleft=False)
+
+    for i, val in enumerate(alignment_rates):
+        ax[1].text(val + max(alignment_rates) * 0.01, i, f'{val:.2f}%', 
+                   va='center', ha='left', fontsize=x_fontsize, color='black')

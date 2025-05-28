@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
 from .bowtie2QCPlot import plot_bars_of_bowtie2_log
+from .bowtie2QCPlot import plot_overall_plot
 
 def auto_cast(value):
     '''
@@ -112,4 +113,12 @@ def procress_logs_with_pdf(log_files:list):
                     top=0.9,
                     bottom=0.55,
                     hspace=0.6) 
+        
+        fig_overall, ax_overall = plt.subplots(1, 2,
+                                               figsize=(8.27,
+                                                        11.69), sharey=True)  # A4 尺寸 (縱向)
+        plt.subplots_adjust(left=0.25, right=0.75, top=0.95,
+                            bottom=0.75,hspace=0.15)  # 調整總體圖表位置
+        plot_overall_plot(all_data, ax_overall)
         pdf.savefig(fig)
+        pdf.savefig(fig_overall)
