@@ -17,10 +17,28 @@ see also [https://pypi.org/project/bowtie2qc/](https://pypi.org/project/bowtie2q
 
 # Usage
 
+run ./examples/bowtie2QCExample.py with
+
+./run_examples.sh
+
+bowtie2QCExample.py:
+
 ```
-from  bowtie2QC import bowtie2QC
+import os
+from bowtie2qc import bowtie2QC
+
+current_path = os.path.abspath(os.getcwd())
 
 
-log_files = ["bowtie2.log", "bowtie2.log","bowtie3.log"]
-bowtie2QC.procress_logs_with_pdf(log_files)
+def example_pdf():
+    bowtie2QC.procress_logs_with_pdf([
+        f"{current_path}/examples/example1.log",
+        f"{current_path}/examples/example2.log",
+        f"{current_path}/examples/example3.log"
+    ])
+
+
+if __name__ == '__main__':
+    example_pdf()
+
 ```
