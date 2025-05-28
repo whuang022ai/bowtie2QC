@@ -35,9 +35,9 @@ def plot_bars_of_bowtie2_log(data, ax):
                   ]]
 
     titles = [
-        f'{data["log_file"]}\nConcordant N',
-        f'{data["log_file"]}\nConcordant=0`s Breakdown\n(Discordant N)',
-        f'{data["log_file"]}\nMate-Level N'
+        f'{data["title_name"]}\nConcordant N',
+        f'{data["title_name"]}\nConcordant=0`s Breakdown\n(Discordant N)',
+        f'{data["title_name"]}\nMate-Level N'
     ]
 
     colors = ['#078282', '#0ababa', '#03fffa']

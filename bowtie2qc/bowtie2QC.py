@@ -2,6 +2,7 @@
 The bowtie2 qc log procress
 '''
 import re
+import os
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
@@ -63,6 +64,7 @@ def parse_bowtie2_log(log_file:str):
                     }
 
     stats['log_file'] = log_file
+    stats['title_name'] = os.path.basename(log_file).split('.')[0]
     return stats
 
 
@@ -89,6 +91,7 @@ def procress_logs_with_pdf(log_files:list):
         for i, log_file in enumerate(log_files):
             data = parse_bowtie2_log(log_file)
             flat_data = {
+            'title_name':data['title_name'],
             'total_reads': data['total_reads'],
             'overall_alignment_rate': data['overall_alignment_rate'],
             'log_file': data['log_file'],
@@ -101,6 +104,7 @@ def procress_logs_with_pdf(log_files:list):
             all_data.append(flat_data)
             plot_bars_of_bowtie2_log(data, ax[i])
         df = pd.DataFrame(all_data) 
+        df.set_index("title_name")
         print(df)
 
         plt.subplots_adjust(left=0.15,
