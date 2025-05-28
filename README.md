@@ -2,11 +2,16 @@
 
 # bowtie2QC
 
-A python bowtie2 QC ploter
+A Python bowtie2 QC plotter
 
+### Bowtie2 Mapping Log PE QC Plot
 ![image](https://github.com/user-attachments/assets/fd1b697a-a9fa-4494-9569-8f83d38fd376)
 
-# Getting Start
+### Bowtie2 Mapping Overall Plot
+![gnome-shell-screenshot-5s2vw6](https://github.com/user-attachments/assets/48ab38ee-b490-4e84-8468-68d2653c4a52)
+
+
+# Getting Started
 
 ## Install from pip
 
