@@ -56,7 +56,11 @@ def get_dynamic_fontsize(num_items, axis_size, min_size=3, max_size=10, scale=0.
     return max(min(size, max_size), min_size)
 
 def plot_overall_plot(data, ax):
+    colors = ['#078282', '#0ababa', '#03fffa']
     total_reads = [val['total_reads'] for val in data]
+    concordant_0 = [val['concordant_0_count'] for val in data]
+    concordant_1 = [val['concordant_1_count'] for val in data]
+    concordant_more = [val['concordant_more_count'] for val in data]
     alignment_rates = [val['overall_alignment_rate'] for val in data]
     labels = [val['title_name'] for val in data]
     num_items = len(data)
@@ -72,16 +76,22 @@ def plot_overall_plot(data, ax):
     width_px = bbox_x.width * fig.dpi
     x_fontsize = get_dynamic_fontsize(num_items, width_px, min_size=3, max_size=5, scale=0.15)
 
-    ax[0].barh(range(num_items), total_reads, align='center', color='#078282', label='Total Reads')
+    ax[0].barh(range(num_items), concordant_0, align='center', color=colors[0], label='Concordant 0 times')
+    ax[0].barh(range(num_items), concordant_1, left=concordant_0, align='center', color=colors[1], label='Concordant 1 time')
+
+    concordant_01 = [c0 + c1 for c0, c1 in zip(concordant_0, concordant_1)]
+    ax[0].barh(range(num_items), concordant_more, left=concordant_01, align='center', color=colors[2], label='Concordant >1 times')
+
     ax[0].set_yticks(range(num_items))
     ax[0].set_yticklabels(labels, fontsize=y_fontsize)
     ax[0].set_xlabel('Reads', fontsize=x_fontsize)
     ax[0].tick_params(axis='x', labelsize=x_fontsize)
-    ax[0].set_title('Overall Reads', fontsize=x_fontsize)
+    ax[0].set_title('Overall Concordant Alignment', fontsize=x_fontsize)
     ax[0].legend(fontsize=x_fontsize)
 
-    for i, val in enumerate(total_reads):
-        ax[0].text(val + max(total_reads) * 0.01, i, f'{val:,}', 
+    total_concordant = [c0 + c1 + c2 for c0, c1, c2 in zip(concordant_0, concordant_1, concordant_more)]
+    for i, val in enumerate(total_concordant):
+        ax[0].text(val + max(total_concordant) * 0.01, i, f'{val:,}', 
                    va='center', ha='left', fontsize=x_fontsize, color='black')
     ax[1].barh(range(num_items), alignment_rates, align='center', color='#0ababa')
     ax[1].set_xlabel('Alignment Rate (%)', fontsize=x_fontsize)
