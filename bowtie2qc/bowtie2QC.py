@@ -9,6 +9,7 @@ import pandas as pd
 from .bowtie2QCPlot import plot_bars_of_bowtie2_log
 from .bowtie2QCPlot import plot_overall_plot
 
+
 def auto_cast(value):
     '''
     cast value to int or float from str
@@ -16,7 +17,7 @@ def auto_cast(value):
     return float(value) if '.' in value else int(value)
 
 
-def parse_bowtie2_log(log_file:str):
+def parse_bowtie2_log(log_file: str):
     '''
     parse bowtie2 log of Pair-End mapping
     input : bowtie2 log file path
@@ -69,7 +70,7 @@ def parse_bowtie2_log(log_file:str):
     return stats
 
 
-def procress_logs(log_files:list):
+def procress_logs(log_files: list):
     '''
     procress bowtie logs to combine fig
     '''
@@ -81,8 +82,7 @@ def procress_logs(log_files:list):
     plt.close(fig)
 
 
-
-def procress_logs_with_pdf(log_files:list):
+def procress_logs_with_pdf(log_files: list):
     '''
     procress bowtie logs to combine fig
     '''
@@ -92,33 +92,40 @@ def procress_logs_with_pdf(log_files:list):
         for i, log_file in enumerate(log_files):
             data = parse_bowtie2_log(log_file)
             flat_data = {
-            'title_name':data['title_name'],
-            'log_file': data['log_file'],
-            'total_reads': data['total_reads'],
-            'overall_alignment_rate': data['overall_alignment_rate'],
+                'title_name': data['title_name'],
+                'log_file': data['log_file'],
+                'total_reads': data['total_reads'],
+                'overall_alignment_rate': data['overall_alignment_rate'],
             }
-            for key in ['concordant_0', 'concordant_1', 'concordant_more', 'discordant_1', 'mate_0', 'mate_1', 'mate_more']:
+            for key in [
+                    'concordant_0', 'concordant_1', 'concordant_more',
+                    'discordant_1', 'mate_0', 'mate_1', 'mate_more'
+            ]:
                 flat_data[f'{key}_count'] = data[key]['count']
                 flat_data[f'{key}_percent'] = data[key]['percent']
             #df = pd.DataFrame([flat_data])
             #print(df)
             all_data.append(flat_data)
             plot_bars_of_bowtie2_log(data, ax[i])
-        df = pd.DataFrame(all_data) 
+        df = pd.DataFrame(all_data)
         df.set_index("title_name")
         print(df)
 
         plt.subplots_adjust(left=0.15,
-                    right=0.9,
-                    top=0.9,
-                    bottom=0.55,
-                    hspace=0.6) 
-        
-        fig_overall, ax_overall = plt.subplots(1, 2,
-                                               figsize=(8.27,
-                                                        11.69), sharey=True)  # A4 尺寸 (縱向)
-        plt.subplots_adjust(left=0.25, right=0.75, top=0.95,
-                            bottom=0.75,hspace=0.15)  # 調整總體圖表位置
+                            right=0.9,
+                            top=0.9,
+                            bottom=0.55,
+                            hspace=0.6)
+
+        fig_overall, ax_overall = plt.subplots(1,
+                                               2,
+                                               figsize=(8.27, 11.69),
+                                               sharey=True)
+        plt.subplots_adjust(left=0.25,
+                            right=0.75,
+                            top=0.95,
+                            bottom=0.75,
+                            hspace=0.15)
         plot_overall_plot(all_data, ax_overall)
         pdf.savefig(fig)
         pdf.savefig(fig_overall)
