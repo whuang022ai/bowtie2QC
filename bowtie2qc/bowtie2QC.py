@@ -82,50 +82,105 @@ def procress_logs(log_files: list):
     plt.close(fig)
 
 
-def procress_logs_with_pdf(log_files: list):
-    '''
-    procress bowtie logs to combine fig
-    '''
-    all_data = []
-    with PdfPages('bowtie2_alignment_results.pdf') as pdf:
-        fig, ax = plt.subplots(len(log_files), 3, figsize=(8.27, 11.69))
-        for i, log_file in enumerate(log_files):
-            data = parse_bowtie2_log(log_file)
-            flat_data = {
-                'title_name': data['title_name'],
-                'log_file': data['log_file'],
-                'total_reads': data['total_reads'],
-                'overall_alignment_rate': data['overall_alignment_rate'],
-            }
-            for key in [
-                    'concordant_0', 'concordant_1', 'concordant_more',
-                    'discordant_1', 'mate_0', 'mate_1', 'mate_more'
-            ]:
-                flat_data[f'{key}_count'] = data[key]['count']
-                flat_data[f'{key}_percent'] = data[key]['percent']
-            #df = pd.DataFrame([flat_data])
-            #print(df)
-            all_data.append(flat_data)
-            plot_bars_of_bowtie2_log(data, ax[i])
-        df = pd.DataFrame(all_data)
-        df.set_index("title_name")
-        print(df)
+def procress_logs_with_png(log_files: list):
+    all_data = collect_bowtie2_log_data(log_files)
+    fig = generate_sample_plot(all_data, for_pdf=False)
+    fig_overall = generate_overall_plot(all_data, for_pdf=False)
 
-        plt.subplots_adjust(left=0.15,
+    fig.savefig('page1.png', dpi=300)
+    fig_overall.savefig('page2.png', dpi=300)
+
+    plt.close(fig)
+    plt.close(fig_overall)
+
+
+def procress_logs_with_pdf(log_files: list):
+    all_data = collect_bowtie2_log_data(log_files)
+    fig = generate_sample_plot(all_data, for_pdf=True)
+    fig_overall = generate_overall_plot(all_data, for_pdf=True)
+
+    with PdfPages('bowtie2_alignment_results.pdf') as pdf:
+        pdf.savefig(fig)
+        pdf.savefig(fig_overall)
+
+    plt.close(fig)
+    plt.close(fig_overall)
+
+
+def collect_bowtie2_log_data(log_files: list):
+    all_data = []
+    for log_file in log_files:
+        data = parse_bowtie2_log(log_file)
+        flat_data = {
+            'title_name': data['title_name'],
+            'log_file': data['log_file'],
+            'total_reads': data['total_reads'],
+            'overall_alignment_rate': data['overall_alignment_rate'],
+        }
+        for key in [
+                'concordant_0', 'concordant_1', 'concordant_more',
+                'discordant_1', 'mate_0', 'mate_1', 'mate_more'
+        ]:
+            flat_data[f'{key}_count'] = data[key]['count']
+            flat_data[f'{key}_percent'] = data[key]['percent']
+        flat_data["raw_data"] = data
+        all_data.append(flat_data)
+    return all_data
+
+
+def generate_sample_plot(all_data, for_pdf=True):
+    n = len(all_data)
+
+    if for_pdf:
+        fig_size = (8.27, 11.69)  # A4
+    else:
+        fig_size = (10, 3 * n)
+
+    fig, ax = plt.subplots(n, 3, figsize=fig_size)
+    if n == 1:
+        ax = [ax]
+
+    for i, item in enumerate(all_data):
+        plot_bars_of_bowtie2_log(item['raw_data'], ax[i])
+
+    if for_pdf:
+        fig.subplots_adjust(left=0.15,
                             right=0.9,
                             top=0.9,
                             bottom=0.55,
                             hspace=0.6)
+    else:
+        fig.tight_layout()
 
-        fig_overall, ax_overall = plt.subplots(1,
-                                               2,
-                                               figsize=(8.27, 11.69),
-                                               sharey=True)
-        plt.subplots_adjust(left=0.25,
+    return fig
+
+
+def generate_overall_plot(all_data, for_pdf=True):
+    if for_pdf:
+        fig_size = (8.27, 11.69)
+    else:
+        fig_size = (12, 5)
+
+    fig, ax = plt.subplots(1, 2, figsize=fig_size, sharey=True)
+
+    plot_overall_plot(all_data, ax)
+
+    if for_pdf:
+        fig.subplots_adjust(left=0.25,
                             right=0.75,
                             top=0.95,
                             bottom=0.75,
                             hspace=0.15)
-        plot_overall_plot(all_data, ax_overall)
-        pdf.savefig(fig)
-        pdf.savefig(fig_overall)
+    else:
+        fig.tight_layout()
+
+    return fig
+
+
+def procress(log_files: list, output_format: str = 'pdf'):
+    assert output_format in ['pdf',
+                             'png'], "output_format must be 'pdf' or 'png'"
+    if output_format == 'pdf':
+        procress_logs_with_pdf(log_files)
+    else:
+        procress_logs_with_png(log_files)
