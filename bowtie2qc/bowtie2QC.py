@@ -8,7 +8,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
 from .bowtie2QCPlot import plot_bars_of_bowtie2_log
 from .bowtie2QCPlot import plot_overall_plot
-
+import seaborn as sns
 
 def auto_cast(value):
     '''
@@ -84,6 +84,8 @@ def procress_logs(log_files: list):
 
 def procress_logs_with_png(log_files: list):
     all_data = collect_bowtie2_log_data(log_files)
+    data_df=data_to_df(all_data)
+    data_df.to_csv("test.csv")
     fig = generate_sample_plot(all_data, for_pdf=False)
     fig_overall = generate_overall_plot(all_data, for_pdf=False)
 
@@ -96,13 +98,15 @@ def procress_logs_with_png(log_files: list):
 
 def procress_logs_with_pdf(log_files: list):
     all_data = collect_bowtie2_log_data(log_files)
+    data_df=data_to_df(all_data)
+    data_df.to_csv("test.csv")
     fig = generate_sample_plot(all_data, for_pdf=True)
     fig_overall = generate_overall_plot(all_data, for_pdf=True)
-
+    fig_scatter=generate_scatter_plot(data_df)
     with PdfPages('bowtie2_alignment_results.pdf') as pdf:
         pdf.savefig(fig)
         pdf.savefig(fig_overall)
-
+        pdf.savefig(fig_scatter)
     plt.close(fig)
     plt.close(fig_overall)
 
@@ -176,6 +180,31 @@ def generate_overall_plot(all_data, for_pdf=True):
 
     return fig
 
+def generate_scatter_plot(df, for_pdf=True):
+    if for_pdf:
+        fig_size = (8.27, 11.69)
+    else:
+        fig_size = (12, 5)
+    fig, ax = plt.subplots(1, 1,figsize=fig_size)
+    sns.scatterplot(x='overall_alignment_rate', y='mate_0_percent', data=df, ax=ax)
+    sns.regplot(x='overall_alignment_rate', y='mate_0_percent', data=df, ax=ax, scatter=False, color='#0ababa')
+    ax.axhline(y=30, color='#078282', linestyle='--', label='Mate 0 Percent = 30%')
+    ax.axvline(x=90, color='#0ababa', linestyle='--', label='Overall Alignment Rate = 90%')
+    #ax.set_title("Overall Alignment Rate vs Mate 0 Percent with Regression Line and Reference Lines")
+    ax.set_xlabel("Overall Alignment Rate (%)")
+    ax.set_ylabel("Mate 0 Percent (%)")
+    ax.legend()
+    
+    if for_pdf:
+        fig.subplots_adjust(left=0.25,
+                            right=0.75,
+                            top=0.95,
+                            bottom=0.75,
+                            hspace=0.15)
+    else:
+        fig.tight_layout()
+    return fig
+
 
 def procress(log_files: list, output_format: str = 'pdf'):
     assert output_format in ['pdf',
@@ -184,3 +213,20 @@ def procress(log_files: list, output_format: str = 'pdf'):
         procress_logs_with_pdf(log_files)
     else:
         procress_logs_with_png(log_files)
+
+def data_to_df(data):
+    parsed_data = []
+    for item in data:
+        item_copy = item.copy()
+        raw_data = item_copy.pop('raw_data') 
+        for key, value in raw_data.items():
+            if isinstance(value, dict):  
+                for sub_key, sub_value in value.items():
+                    item_copy[f"{key}_{sub_key}"] = sub_value
+            else:
+                item_copy[key] = value
+        parsed_data.append(item_copy)
+
+    df = pd.DataFrame(parsed_data)
+    df.set_index("title_name",inplace=True)
+    return df
